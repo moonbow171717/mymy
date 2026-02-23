@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 복사 버튼 추가</title>
+<title>관리자 페이지 - 하위 카테고리 목록 추가</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -17,6 +17,7 @@ label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-w
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
 .copy-btn:hover { background: #218838; }
+.hint { font-size: 0.8em; color: #4a90e2; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -31,10 +32,13 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <h2>✍️ 새 포스트 작성</h2>
 <label>파일 이름 (예: aa-03)</label>
 <input type="text" id="fileName">
+
 <label>글 제목</label>
 <input type="text" id="title">
+
 <label>상위 카테고리 (Parent)</label>
 <select id="parent">
+
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
 <option value="쥬얀">쥬얀</option>
@@ -43,21 +47,36 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <option value="원작">원작</option>
 <option value="끄적끄적">끄적끄적</option>
 </select>
-<label>하위 카테고리 (Sub)</label>
-<input type="text" id="sub">
+
+<label>하위 카테고리 (목록에서 선택하거나 직접 입력)</label>
+<input type="text" id="sub" list="subList" placeholder="시리즈 이름을 쓰거나 고르세요">
+<datalist id="subList">
+
+<option value="연애 포기 각서">
+<option value="홈 스윗 홈">
+<option value="러브 콤플렉스">
+<option value="순애보증수표">
+<option value="대타위기사랑">
+<option value="양의 종말">
+<option value="시시콜콜한 마음">
+<option value="일상">
+<option value="잡담">
+</datalist>
+<div class="hint">* 목록에 없으면 그냥 직접 타이핑하시면 됩니다!</div>
+
 <label>날짜</label>
 <input type="date" id="date">
+
 <label>본문 내용</label>
+
 <textarea id="content"></textarea>
+
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
+
 </div>
 
 <div id="resultArea" class="box">
 <h3 style="color: #4a90e2; margin-top: 0;">✅ 파일 다운로드 완료!</h3>
-<p style="font-size: 0.9em; margin-bottom: 15px;">아래 버튼을 눌러 코드를 복사한 뒤,
-
-
-<b>posts/index.json</b>의 맨 윗줄([ 바로 다음)에 붙여넣으세요.</p>
 <pre id="indexCode"></pre>
 <button id="btnCopy" class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
 <button onclick="location.reload()" style="background: #555;">새 글 작성하러 가기</button>
@@ -110,8 +129,6 @@ navigator.clipboard.writeText(code).then(() => {
 const btn = document.getElementById('btnCopy');
 btn.innerText = "✅ 복사되었습니다!";
 setTimeout(() => { btn.innerText = "📋 코드 복사하기"; }, 2000);
-}).catch(err => {
-alert("복사 실패! 수동으로 복사해주세요.");
 });
 }
 </script>
