@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 힌트 고정 완료</title>
+<title>관리자 페이지 - 최종 완성</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -14,9 +14,8 @@ button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
 .login-box { text-align: center; }
 label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-weight: bold; }
-pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
+pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; white-space: pre-wrap; word-break: break-all; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
-/* 힌트 글씨가 잘 보이도록 확실히 설정 */
 .hint-text { font-size: 0.85em; color: #4a90e2 !important; margin: 5px 0; font-weight: bold; display: block; }
 </style>
 </head>
@@ -32,7 +31,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <h2>✍️ 새 포스트 작성</h2>
 
 <label>파일 이름 (예: aa-03)</label>
-<input type="text" id="fileName" autocomplete="off">
+<input type="text" id="fileName" autocomplete="off" placeholder="영문/숫자 입력">
 
 <label>글 제목</label>
 <input type="text" id="title" autocomplete="off">
@@ -50,20 +49,12 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>하위 카테고리 (Sub)</label>
 <span id="categoryHint" class="hint-text">추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스</span>
-<input type="text" id="sub" list="subOptions" placeholder="시리즈 이름을 쓰거나 고르세요" autocomplete="off">
+<input type="text" id="sub" list="subOptions" placeholder="직접 입력하거나 목록에서 선택" autocomplete="off">
 <datalist id="subOptions">
-<option value="연애 포기 각서">
-<option value="홈 스윗 홈">
-<option value="러브 콤플렉스">
-<option value="순애보증수표">
-<option value="대타위기사랑">
-<option value="양의 종말">
-<option value="시시콜콜한 마음">
-<option value="일상">
-<option value="잡담">
-<option value="단편소설">
-<option value="설정집">
-<option value="낙서">
+<option value="연애 포기 각서"><option value="홈 스윗 홈"><option value="러브 콤플렉스">
+<option value="순애보증수표"><option value="대타위기사랑"><option value="양의 종말">
+<option value="시시콜콜한 마음"><option value="일상"><option value="잡담">
+<option value="단편소설"><option value="설정집"><option value="낙서">
 </datalist>
 
 <label>날짜</label>
@@ -71,7 +62,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>본문 내용</label>
 
-<textarea id="content"></textarea>
+<textarea id="content" placeholder="글 내용을 입력하세요"></textarea>
 
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 
@@ -79,6 +70,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <div id="resultArea" class="box">
 <h3 style="color: #4a90e2; margin-top: 0;">✅ 완료!</h3>
+<p style="font-size: 0.9em; color: #ccc;">파일 2개가 다운로드되었습니다. 아래 코드를 복사해서 index.json에 추가하세요.</p>
 <pre id="indexCode"></pre>
 <button id="btnCopy" class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
 <button onclick="location.reload()" style="background: #555;">새 글 작성하러 가기</button>
@@ -97,9 +89,7 @@ const hints = {
 
 function changeHint() {
 const p = document.getElementById('parent').value;
-const hintBox = document.getElementById('categoryHint');
-hintBox.innerText = hints[p] || "";
-document.getElementById('sub').value = ""; // 입력창 초기화
+document.getElementById('categoryHint').innerText = hints[p] || "";
 }
 
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
@@ -109,7 +99,7 @@ if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
-changeHint(); // 로그인 즉시 힌트 표시
+changeHint();
 } else { alert("비밀번호가 틀렸습니다!"); }
 }
 
