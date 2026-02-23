@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const parentParam = params.get("parent");
   const subParam = params.get("sub");
 
-  // [기존 로직 유지] PHOTOS 카테고리
   if (category === "photos") {
     subMenu.innerHTML = `<a href="index.html?cat=photos" class="active">모든 사진</a><a href="index.html">홈으로</a>`;
     list.className = "photo-grid";
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const item = document.createElement("div");
           item.className = "photo-card";
           item.innerHTML = `<img src="${img.src}">`;
-          // [수정] from 파라미터를 정확하게 index.html?cat=photos 로 전달
           item.onclick = () => location.href = `viewer.html?img=${encodeURIComponent(img.src)}&from=${encodeURIComponent('index.html?cat=photos')}`;
           list.appendChild(item);
         };
@@ -36,21 +34,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 게시글 로딩 로직
   fetch("posts/index.json?v=" + new Date().getTime())
     .then(r => r.json())
     .then(originalPosts => {
-      const validPosts = originalPosts.filter(p => p && p.title && p.date);
+      const validPosts = originalPosts.filter(p => p && p.title);
       let posts = [...validPosts];
 
       if (category === "diary") {
+        // 이 부분을 나중에 새로운 아카이브 카테고리로 바꾸세요!
         const menuStructure = [
-          { name: "글", subs: ["5/10", "성간운", "일상", "카페"] },
-          { name: "냐람", subs: ["구원의 구원", "돌을 던진 것은 누구인가", "러브 콤플렉스", "연애 포기 각서", "지구 열 바퀴", "홈 스윗 홈", "NR"] },
-          { name: "냐쥬", subs: ["대타위기사랑", "순애보증수표", "NJ"] },
-		  { name: "댠닺", subs: ["Private", "DD"] },
-		  { name: "쥬얀", subs: ["시시콜콜한 마음", "양의 종말", "JA"]},
-		  { name: "원작", subs: ["Denied Love"]},
+          { name: "시리즈 A", subs: ["aa"] },
+          { name: "시리즈 B", subs: ["bb"] },
           { name: "끄적끄적", subs: ["잡담"] }
         ];
 
@@ -80,7 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (subParam) posts = posts.filter(p => p.sub === subParam);
       else if (parentParam) posts = posts.filter(p => p.parent === parentParam);
 
-      posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      // 파일명 순으로 정렬
+      posts.sort((a, b) => (a.file < b.file ? -1 : 1));
+
       list.innerHTML = "";
       posts.forEach(p => {
         const item = document.createElement("div");
@@ -88,9 +84,9 @@ document.addEventListener("DOMContentLoaded", () => {
         item.innerHTML = `<h3>${p.title}</h3><span class="date">${p.date}</span><p>${p.excerpt || "내용 보기"}</p>`;
         item.onclick = () => {
           let fromPath = location.search ? `index.html${location.search}` : "index.html";
-          let fileName = p.file || p.date;
-          if (!fileName.toString().endsWith('.json')) fileName += '.json';
-          location.href = `viewer.html?post=posts/${fileName}&from=${encodeURIComponent(fromPath)}`;
+          // 파일 이름을 직접 연결
+          let fileName = p.file;
+          location.href = `viewer.html?post=posts/${fileName}.json&from=${encodeURIComponent(fromPath)}`;
         };
         list.appendChild(item);
       });
