@@ -69,11 +69,10 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <h3 style="color: #4a90e2; margin-top: 0;">✅ 파일 다운로드 완료!</h3>
 <pre id="indexCode"></pre>
 <button id="btnCopy" class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
-<button onclick="location.reload()" style="background: #555;">새 글 작성하러 가기</button>
+<button onclick="resetForm()" style="background: #555;">새 글 작성하러 가기</button>
 </div>
 
 <script>
-// 추천 목록 데이터 (원하는 대로 수정하세요)
 const menuData = {
 "냐람": ["너란 이유", "연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스", "구원의 구원", "지구 열 바퀴", "NR"],
 "냐쥬": ["순애보증수표", "대타위기사랑", "NJ"],
@@ -89,17 +88,23 @@ const p = document.getElementById('parent').value;
 const hintBox = document.getElementById('subHint');
 const dataList = document.getElementById('subList');
 const subs = menuData[p] || [];
-
-// 파란색 글씨 업데이트
 hintBox.innerText = "추천: " + subs.join(", ");
-
-// 드롭다운 목록 업데이트
 dataList.innerHTML = "";
 subs.forEach(s => {
 const opt = document.createElement('option');
 opt.value = s;
 dataList.appendChild(opt);
 });
+}
+
+function resetForm() {
+document.getElementById('resultArea').style.display = 'none';
+document.getElementById('adminContent').style.display = 'block';
+document.getElementById('fileName').value = "";
+document.getElementById('title').value = "";
+document.getElementById('sub').value = "";
+document.getElementById('content').value = "";
+window.scrollTo(0, 0);
 }
 
 window.onload = () => {
@@ -129,16 +134,12 @@ const d = document.getElementById('date').value;
 const p = document.getElementById('parent').value;
 const s = document.getElementById('sub').value.trim();
 const c = document.getElementById('content').value;
-
 if(!f || !t || !s) return alert("다 입력해주세요!");
-
 const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt" };
 const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
 const codeText = JSON.stringify(indexEntry, null, 2) + ",";
-
 dl(f + ".json", JSON.stringify(json, null, 2));
 dl(f + ".txt", c);
-
 document.getElementById('indexCode').innerText = codeText;
 document.getElementById('adminContent').style.display = 'none';
 document.getElementById('resultArea').style.display = 'block';
