@@ -1,67 +1,18 @@
 [
-  {
-    "title": "연애 포기 각서 (상)",
-    "date": "2026-02-21",
-    "category": "diary",
-    "parent": "냐람",
-    "sub": "연애 포기 각서",
-    "file": "aa-01"
-  },
-  {
-    "title": "연애 포기 각서 (하)",
-    "date": "2026-02-22",
-    "category": "diary",
-    "parent": "냐람",
-    "sub": "연애 포기 각서",
-    "file": "aa-02"
-  },
 {
-  "title": "너란 이유 1",
+  "title": "십 분의 오 1",
   "date": "2026-02-23",
   "category": "diary",
-  "parent": "냐람",
-  "sub": "너란 이유",
-  "file": "bb-01"
+  "parent": "소설",
+  "sub": "5/10",
+  "file": "five-tenths-01"
 },
 {
-  "title": "너란 이유 2",
+  "title": "십 분의 오 2",
   "date": "2026-02-23",
   "category": "diary",
-  "parent": "냐람",
-  "sub": "너란 이유",
-  "file": "bb-02"
-},
-{
-  "title": "순애보증수표1",
-  "date": "2026-02-23",
-  "category": "diary",
-  "parent": "냐쥬",
-  "sub": "순애보증수표",
-  "file": "aa-03"
-},
-{
-  "title": "순애보증수표 2",
-  "date": "2026-02-23",
-  "category": "diary",
-  "parent": "냐쥬",
-  "sub": "순애보증수표",
-  "file": "aa-04"
-},
-{
-  "title": "순애보증수표 3",
-  "date": "2026-02-23",
-  "category": "diary",
-  "parent": "냐쥬",
-  "sub": "순애보증수표",
-  "file": "aa-05"
-},
-  {
-    "title": "자동화 성공",
-    "date": "2026-02-25",
-    "category": "diary",
-    "parent": "글",
-    "sub": "일상",
-    "excerpt": "이제 편하다",
-    "file": "daily-01"
-  }
+  "parent": "소설",
+  "sub": "5/10",
+  "file": "five-tenths-02"
+}
 ]
