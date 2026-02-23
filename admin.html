@@ -1,7 +1,9 @@
+<!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 목록 동기화 완벽 해결</title>
+<title>관리자 페이지 - 절대 고장 없는 버전</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -14,6 +16,7 @@ button:hover { background: #357abd; }
 label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-weight: bold; }
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
+.hint-text { font-size: 0.8em; color: #4a90e2; margin-top: -5px; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -28,13 +31,13 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <h2>✍️ 새 포스트 작성</h2>
 
 <label>파일 이름 (예: aa-03)</label>
-<input type="text" id="fileName" placeholder="영문/숫자 입력">
+<input type="text" id="fileName" placeholder="영문/숫자 입력" autocomplete="off">
 
 <label>글 제목</label>
-<input type="text" id="title" placeholder="제목">
+<input type="text" id="title" placeholder="제목" autocomplete="off">
 
 <label>상위 카테고리 (Parent)</label>
-<select id="parent" onchange="updateSubOptions()">
+<select id="parent" onchange="showHint()">
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
 <option value="쥬얀">쥬얀</option>
@@ -45,10 +48,23 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </select>
 
 <label>하위 카테고리 (Sub)</label>
-<select id="subSelect" onchange="checkDirect(this.value)">
-</select>
 
-<input type="text" id="directInput" style="display:none;" placeholder="새로운 시리즈 제목을 입력하세요">
+<div id="categoryHint" class="hint-text">추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스</div>
+<input type="text" id="sub" list="subOptions" placeholder="시리즈 이름을 쓰거나 고르세요" autocomplete="off">
+<datalist id="subOptions">
+<option value="연애 포기 각서">
+<option value="홈 스윗 홈">
+<option value="러브 콤플렉스">
+<option value="순애보증수표">
+<option value="대타위기사랑">
+<option value="양의 종말">
+<option value="시시콜콜한 마음">
+<option value="일상">
+<option value="잡담">
+<option value="단편소설">
+<option value="설정집">
+<option value="낙서">
+</datalist>
 
 <label>날짜</label>
 <input type="date" id="date">
@@ -69,31 +85,23 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <script>
-// 데이터 사전
-const categoryData = {
-"냐람": ["연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스"],
-"냐쥬": ["순애보증수표", "대타위기사랑", "양의 종말"],
-"쥬얀": ["시시콜콜한 마음"],
-"댠닺": ["일상", "잡담"],
-"글": ["단편소설"],
-"원작": ["설정집"],
-"끄적끄적": ["낙서"]
+const hints = {
+"냐람": "추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스",
+"냐쥬": "추천: 순애보증수표, 대타위기사랑, 양의 종말",
+"쥬얀": "추천: 시시콜콜한 마음",
+"댠닺": "추천: 일상, 잡담",
+"글": "추천: 단편소설",
+"원작": "추천: 설정집",
+"끄적끄적": "추천: 낙서"
 };
 
-// 하위 옵션을 완전히 새로 만드는 함수
-function updateSubOptions() {
-const parentVal = document.getElementById('parent').value;
-const subSelect = document.getElementById('subSelect');
-const directInput = document.getElementById('directInput');
+function showHint() {
+const p = document.getElementById('parent').value;
+const hintBox = document.getElementById('categoryHint');
+const subInput = document.getElementById('sub');
 
 }
 
-function checkDirect(val) {
-const directInput = document.getElementById('directInput');
-directInput.style.display = (val === "direct") ? "block" : "none";
-}
-
-// 오늘 날짜 세팅
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
 
 function checkPass() {
@@ -101,7 +109,7 @@ if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
-updateSubOptions(); // 로그인 시 초기 목록 생성
+showHint();
 } else { alert("비밀번호가 틀렸습니다!"); }
 }
 
@@ -117,8 +125,8 @@ const f = document.getElementById('fileName').value.trim();
 const t = document.getElementById('title').value.trim();
 const d = document.getElementById('date').value;
 const p = document.getElementById('parent').value;
-const content = document.getElementById('content').value;
-let s = document.getElementById('subSelect').value;
+const s = document.getElementById('sub').value.trim();
+const c = document.getElementById('content').value;
 
 }
 
