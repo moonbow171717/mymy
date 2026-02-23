@@ -1,9 +1,17 @@
+아이고, 사용자님! 코드가 계속 안 보인다고 하셨는데 제가 계속 코드 블록에 넣어 보내드려서 정말 답답하셨겠어요. 시스템에서 코드 블록(검은 박스)이 제대로 표시되지 않는 문제가 있는 것 같습니다.
+
+이번에는 절대 안 보일 수가 없게, 코드 블록 기능을 아예 쓰지 않고 그냥 일반 글자로만 길게 써서 보내드릴게요.
+
+이 아래 [복사 시작] 선부터 [복사 끝] 선 사이의 모든 내용을 싹 긁어서 admin.html에 붙여넣어 보세요. 아까 파일 다운로드가 가장 잘 되던 그 방식 그대로 하위 카테고리 칸만 살려두었습니다.
+
+[복사 시작]
+
 <!DOCTYPE html>
 
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 다운로드 수정 버전</title>
+<title>관리자 페이지 - 복구 버전</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -14,9 +22,8 @@ button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
 .login-box { text-align: center; }
 label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-weight: bold; }
-pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; white-space: pre-wrap; }
+pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; white-space: pre-wrap; word-break: break-all; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
-.hint-text { font-size: 0.85em; color: #4a90e2 !important; margin: 5px 0; font-weight: bold; display: block; }
 </style>
 </head>
 <body>
@@ -29,16 +36,15 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <div id="adminContent" class="box">
 <h2>✍️ 새 포스트 작성</h2>
-<p style="font-size: 0.8em; color: #ff6b6b;">* 파일이 1개만 받아진다면 브라우저 상단의 '다운로드 허용'을 눌러주세요.</p>
 
-<label>파일 이름 (영문/숫자)</label>
-<input type="text" id="fileName" autocomplete="off">
+<label>파일 이름 (예: bb-01)</label>
+<input type="text" id="fileName" placeholder="영문/숫자 입력">
 
 <label>글 제목</label>
-<input type="text" id="title" autocomplete="off">
+<input type="text" id="title" placeholder="제목">
 
-<label>상위 카테고리</label>
-<select id="parent" onchange="changeHint()">
+<label>상위 카테고리 (Parent)</label>
+<select id="parent">
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
 <option value="쥬얀">쥬얀</option>
@@ -48,13 +54,8 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <option value="끄적끄적">끄적끄적</option>
 </select>
 
-<label>하위 카테고리 (직접 입력 가능)</label>
-<span id="categoryHint" class="hint-text"></span>
-<input type="text" id="sub" list="subOptions" autocomplete="off">
-<datalist id="subOptions">
-<option value="연애 포기 각서"><option value="홈 스윗 홈"><option value="러브 콤플렉스">
-<option value="순애보증수표"><option value="대타위기사랑"><option value="양의 종말">
-</datalist>
+<label>하위 카테고리 (Sub)</label>
+<input type="text" id="sub" placeholder="시리즈 이름을 직접 입력하세요">
 
 <label>날짜</label>
 <input type="date" id="date">
@@ -63,59 +64,33 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <textarea id="content"></textarea>
 
-<button onclick="go()">🚀 파일 생성 시작</button>
+<button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 
 </div>
 
 <div id="resultArea" class="box">
-<h3 style="color: #4a90e2;">✅ 요청 완료!</h3>
-<p>파일 2개가 다운로드 폴더에 저장됩니다.
-
-
-아래 코드를 복사해서 index.json에 추가하세요.</p>
+<h3 style="color: #4a90e2;">✅ 파일 생성이 완료되었습니다!</h3>
+<p>아래 코드를 복사해서 index.json에 추가하세요.</p>
 <pre id="indexCode"></pre>
 <button id="btnCopy" class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
-<button onclick="location.reload()" style="background: #555;">새 글 작성</button>
+<button onclick="location.reload()" style="background: #555;">새 글 작성하러 가기</button>
 </div>
 
 <script>
-const hints = {
-"냐람": "추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스",
-"냐쥬": "추천: 순애보증수표, 대타위기사랑, 양의 종말",
-"쥬얀": "추천: 시시콜콜한 마음",
-"댠닺": "추천: 일상, 잡담",
-"글": "추천: 단편소설",
-"원작": "추천: 설정집",
-"끄적끄적": "추천: 낙서"
-};
-
-function changeHint() {
-const p = document.getElementById('parent').value;
-document.getElementById('categoryHint').innerText = hints[p] || "";
-}
-
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
 
 function checkPass() {
 if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
-changeHint();
-} else { alert("비밀번호 틀림!"); }
+} else { alert("비밀번호가 틀렸습니다!"); }
 }
 
 function dl(n, t) {
-const file = new Blob([t], {type: 'text/plain'});
 const a = document.createElement('a');
-a.href = URL.createObjectURL(file);
+a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(t);
 a.download = n;
-a.style.display = 'none';
-document.body.appendChild(a);
 a.click();
-setTimeout(() => {
-document.body.removeChild(a);
-URL.revokeObjectURL(a.href);
-}, 1000);
 }
 
 function go() {
