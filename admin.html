@@ -1,17 +1,7 @@
-아하, 올려주신 이미지(image_bad3f7.png)를 보니 원인을 딱 알겠습니다!
-
-하얀색 선처럼 얇게 한 줄만 보이는 건, select 박스 안에 내용(option)이 하나도 없어서 그래요. 제가 아까 드린 코드에서 "로그인 직후"나 "카테고리를 바꿀 때" 목록을 그려주는 기능이 사용자님의 브라우저 환경에서 순서가 꼬여 작동하지 않는 것 같습니다.
-
-이 문제를 뿌리부터 해결하기 위해, 자바스크립트(JS)로 목록을 만들지 않고 HTML 안에 미리 모든 목록을 다 적어두는 방식으로 바꿨습니다. 이렇게 하면 데이터가 꼬일 일이 절대 없어요!
-
-이 코드를 복사해서 admin.html에 덮어쓰기 하세요. 이번엔 정말 확실합니다!
-
-<!DOCTYPE html>
-
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 최종 해결 버전</title>
+<title>관리자 페이지 - 목록 동기화 완벽 해결</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -24,8 +14,6 @@ button:hover { background: #357abd; }
 label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-weight: bold; }
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
-/* 하위 카테고리 그룹 숨기기용 */
-.sub-group { display: none; }
 </style>
 </head>
 <body>
@@ -46,7 +34,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <input type="text" id="title" placeholder="제목">
 
 <label>상위 카테고리 (Parent)</label>
-<select id="parent" onchange="changeParent()">
+<select id="parent" onchange="updateSubOptions()">
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
 <option value="쥬얀">쥬얀</option>
@@ -57,37 +45,10 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </select>
 
 <label>하위 카테고리 (Sub)</label>
-<select id="subSelect">
-<optgroup label="냐람" class="sub-group" id="opt-냐람">
-<option value="연애 포기 각서">연애 포기 각서</option>
-<option value="홈 스윗 홈">홈 스윗 홈</option>
-<option value="러브 콤플렉스">러브 콤플렉스</option>
-</optgroup>
-<optgroup label="냐쥬" class="sub-group" id="opt-냐쥬">
-<option value="순애보증수표">순애보증수표</option>
-<option value="대타위기사랑">대타위기사랑</option>
-<option value="양의 종말">양의 종말</option>
-</optgroup>
-<optgroup label="쥬얀" class="sub-group" id="opt-쥬얀">
-<option value="시시콜콜한 마음">시시콜콜한 마음</option>
-</optgroup>
-<optgroup label="댠닺" class="sub-group" id="opt-댠닺">
-<option value="일상">일상</option>
-<option value="잡담">잡담</option>
-</optgroup>
-<optgroup label="글" class="sub-group" id="opt-글">
-<option value="단편소설">단편소설</option>
-</optgroup>
-<optgroup label="원작" class="sub-group" id="opt-원작">
-<option value="설정집">설정집</option>
-</optgroup>
-<optgroup label="끄적끄적" class="sub-group" id="opt-끄적끄적">
-<option value="낙서">낙서</option>
-</optgroup>
-<option value="direct">+ 직접 입력하기</option>
+<select id="subSelect" onchange="checkDirect(this.value)">
 </select>
 
-<input type="text" id="directInput" style="display:none;" placeholder="새로운 시리즈 제목 입력">
+<input type="text" id="directInput" style="display:none;" placeholder="새로운 시리즈 제목을 입력하세요">
 
 <label>날짜</label>
 <input type="date" id="date">
@@ -108,32 +69,39 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <script>
-// 오늘 날짜
-document.getElementById('date').value = new Date().toISOString().substring(0, 10);
-
-function changeParent() {
-const parent = document.getElementById('parent').value;
-const groups = document.querySelectorAll('.sub-group');
-const directInput = document.getElementById('directInput');
-
-}
-
-// 직접 입력 선택 감지
-document.getElementById('subSelect').onchange = function() {
-const directInput = document.getElementById('directInput');
-if(this.value === 'direct') {
-directInput.style.display = 'block';
-} else {
-directInput.style.display = 'none';
-}
+// 데이터 사전
+const categoryData = {
+"냐람": ["연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스"],
+"냐쥬": ["순애보증수표", "대타위기사랑", "양의 종말"],
+"쥬얀": ["시시콜콜한 마음"],
+"댠닺": ["일상", "잡담"],
+"글": ["단편소설"],
+"원작": ["설정집"],
+"끄적끄적": ["낙서"]
 };
+
+// 하위 옵션을 완전히 새로 만드는 함수
+function updateSubOptions() {
+const parentVal = document.getElementById('parent').value;
+const subSelect = document.getElementById('subSelect');
+const directInput = document.getElementById('directInput');
+
+}
+
+function checkDirect(val) {
+const directInput = document.getElementById('directInput');
+directInput.style.display = (val === "direct") ? "block" : "none";
+}
+
+// 오늘 날짜 세팅
+document.getElementById('date').value = new Date().toISOString().substring(0, 10);
 
 function checkPass() {
 if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
-changeParent(); // 로그인 하자마자 첫 목록 보여주기
+updateSubOptions(); // 로그인 시 초기 목록 생성
 } else { alert("비밀번호가 틀렸습니다!"); }
 }
 
