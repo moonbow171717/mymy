@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 하위 카테고리 목록 추가</title>
+<title>관리자 페이지 - 하위 카테고리 가이드</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -17,7 +17,7 @@ label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-w
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
 .copy-btn:hover { background: #218838; }
-.hint { font-size: 0.8em; color: #4a90e2; margin-bottom: 10px; }
+.hint { font-size: 0.8em; color: #4a90e2; margin-top: 2px; margin-bottom: 10px; font-weight: bold; line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -37,7 +37,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <input type="text" id="title">
 
 <label>상위 카테고리 (Parent)</label>
-<select id="parent">
+<select id="parent" onchange="updateHint()">
 
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
@@ -48,21 +48,11 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <option value="끄적끄적">끄적끄적</option>
 </select>
 
-<label>하위 카테고리 (목록에서 선택하거나 직접 입력)</label>
-<input type="text" id="sub" list="subList" placeholder="시리즈 이름을 쓰거나 고르세요">
-<datalist id="subList">
+<label>하위 카테고리 (시리즈 이름)</label>
 
-<option value="연애 포기 각서">
-<option value="홈 스윗 홈">
-<option value="러브 콤플렉스">
-<option value="순애보증수표">
-<option value="대타위기사랑">
-<option value="양의 종말">
-<option value="시시콜콜한 마음">
-<option value="일상">
-<option value="잡담">
-</datalist>
-<div class="hint">* 목록에 없으면 그냥 직접 타이핑하시면 됩니다!</div>
+<div id="subHint" class="hint">추천: 목록을 불러오는 중...</div>
+<input type="text" id="sub" list="subList" placeholder="시리즈 이름을 쓰거나 고르세요">
+<datalist id="subList"></datalist>
 
 <label>날짜</label>
 <input type="date" id="date">
@@ -83,7 +73,39 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <script>
+// 추천 목록 데이터 (원하는 대로 수정하세요)
+const menuData = {
+"냐람": ["너란 이유", "연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스", "구원의 구원", "지구 열 바퀴", "NR"],
+"냐쥬": ["순애보증수표", "대타위기사랑", "NJ"],
+"쥬얀": ["양의 종말", "시시콜콜한 마음", "JA"],
+"댠닺": ["Private", "DD"],
+"글": ["성간운", "5/10", "일상", "카페"],
+"원작": ["Denied Love"],
+"끄적끄적": ["잡담"]
+};
+
+function updateHint() {
+const p = document.getElementById('parent').value;
+const hintBox = document.getElementById('subHint');
+const dataList = document.getElementById('subList');
+const subs = menuData[p] || [];
+
+// 파란색 글씨 업데이트
+hintBox.innerText = "추천: " + subs.join(", ");
+
+// 드롭다운 목록 업데이트
+dataList.innerHTML = "";
+subs.forEach(s => {
+const opt = document.createElement('option');
+opt.value = s;
+dataList.appendChild(opt);
+});
+}
+
+window.onload = () => {
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+updateHint();
+};
 
 function checkPass() {
 if (document.getElementById('passInput').value === "1234") {
