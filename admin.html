@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아카이브 관리자 - 글쓰기</title>
+<style>
+:root { --bg: #1a1a1a; --card: #2a2a2a; --text: #eee; --point: #4a90e2; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
+.container { max-width: 800px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+h2 { margin-top: 0; color: var(--point); }
+label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9em; color: #aaa; }
+input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border-radius: 6px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; font-size: 16px; }
+textarea { height: 400px; font-family: monospace; resize: vertical; }
+.btn-group { margin-top: 30px; display: flex; gap: 10px; }
+button { flex: 1; background: var(--point); color: white; border: none; padding: 15px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+button:hover { background: #357abd; transform: translateY(-2px); }
+button.sub-btn { background: #555; }
+.info-box { background: #333; padding: 15px; border-radius: 6px; border-left: 4px solid var(--point); margin-bottom: 20px; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>✍️ 새 포스트 작성</h2>
+<div class="info-box">
+내용을 입력하고 생성 버튼을 누르면 <b>.json</b>과 <b>.txt</b> 파일이 다운로드됩니다.
+
+
+
+이 파일들을 깃허브 <b>posts/</b> 폴더에 업로드하면 사이트에 즉시 반영됩니다!
+</div>
+
+</div>
+
+<script>
+document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+
+</script>
+
+</body>
+</html>
