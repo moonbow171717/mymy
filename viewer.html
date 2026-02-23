@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MY ARCHIVE | POST</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    if (!sessionStorage.getItem("auth")) {
+      location.href = "login.html";
+    }
+  </script>
+  <style>
+    .logo {
+      font-family: 'Pretendard', sans-serif;
+      font-weight: 800; 
+      letter-spacing: 1.5px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #A0A5B5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+    #post {
+      word-break: break-all;
+      overflow-wrap: break-word;
+      line-height: 1.8;
+      color: #d1d5db;
+    }
+    .img-wrap img {
+      width: 100%;
+      border-radius: 20px;
+      margin: 15px 0;
+    }
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 30px;
+      right: 25px;
+      z-index: 1000;
+      width: 45px;
+      height: 45px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+  </style>
+</head>
+<body>
+<nav class="topbar">
+  <div class="top-inner">
+    <div class="logo">MY ARCHIVE</div>
+    <div class="top-links">
+      <a href="index.html">HOME</a>
+      <a href="index.html?cat=diary">DIARY</a>
+      <a href="index.html?cat=photos">PHOTOS</a>
+    </div>
+    <button class="menu-btn" id="menuBtn">☰</button>
+  </div>
+</nav>
+<button id="scrollTopBtn" title="Go to top">↑</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content">
+    <div id="post"></div>
+  </main>
+</div>
+<script src="viewer.js?v=5"></script>
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  if(menuBtn) {
+    menuBtn.onclick = () => {
+      document.getElementById("sidebar").classList.toggle("open");
+    };
+  }
+  const topBtn = document.getElementById("scrollTopBtn");
+  window.onscroll = function() {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      topBtn.style.display = "flex";
+    } else {
+      topBtn.style.display = "none";
+    }
+  };
+  topBtn.onclick = function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+</script>
+</body>
+</html>
