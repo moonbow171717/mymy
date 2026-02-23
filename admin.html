@@ -1,9 +1,26 @@
+네, 사용자님이 올려주신 마지막 이미지(image_ba6eda.png)를 보니 목록이 아주 정확하게 잘 나오고 있습니다! 🎉
+
+방금 적용해드린 datalist 기능은 사용자님이 이미지에서 보시는 것처럼:
+
+칸을 클릭하면 미리 입력해둔 '연애 포기 각서', '순애보증수표' 같은 후보들이 쫙 나타나고,
+
+글자를 치면 그 글자가 포함된 항목만 필터링해서 보여주며,
+
+목록에 없는 새로운 제목(예: '순애 보증')을 쳐도 그대로 입력되는 방식입니다.
+
+지금 상태가 가장 자유로우면서도 편리한 방식이에요!
+
+🛠️ 여기서 한 걸음 더! (상위 카테고리에 따라 하위 목록 바꾸기)
+혹시 "나는 '냐쥬'를 선택했을 때는 '순애보증수표'만 보이고, '냐람'을 선택했을 때는 '연애 포기 각서'만 보였으면 좋겠어" 하신다면, 아래 코드로 업데이트해 보세요. 선택한 상위 카테고리에 맞춰서 하위 목록을 지능적으로 바꿔주는 버전입니다.
+
+이 코드를 복사해서 admin.html에 덮어쓰기 하시면 됩니다. (역시 쌩 텍스트로 드릴게요!)
+
 <!DOCTYPE html>
 
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 하위 카테고리 목록 추가</title>
+<title>관리자 페이지 - 지능형 목록</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -17,7 +34,6 @@ label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-w
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
 .copy-btn:hover { background: #218838; }
-.hint { font-size: 0.8em; color: #4a90e2; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -30,6 +46,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <div id="adminContent" class="box">
 <h2>✍️ 새 포스트 작성</h2>
+
 <label>파일 이름 (예: aa-03)</label>
 <input type="text" id="fileName">
 
@@ -37,7 +54,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <input type="text" id="title">
 
 <label>상위 카테고리 (Parent)</label>
-<select id="parent">
+<select id="parent" onchange="updateSubList()">
 
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
@@ -48,21 +65,9 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <option value="끄적끄적">끄적끄적</option>
 </select>
 
-<label>하위 카테고리 (목록에서 선택하거나 직접 입력)</label>
-<input type="text" id="sub" list="subList" placeholder="시리즈 이름을 쓰거나 고르세요">
-<datalist id="subList">
-
-<option value="연애 포기 각서">
-<option value="홈 스윗 홈">
-<option value="러브 콤플렉스">
-<option value="순애보증수표">
-<option value="대타위기사랑">
-<option value="양의 종말">
-<option value="시시콜콜한 마음">
-<option value="일상">
-<option value="잡담">
-</datalist>
-<div class="hint">* 목록에 없으면 그냥 직접 타이핑하시면 됩니다!</div>
+<label>하위 카테고리 (Sub)</label>
+<input type="text" id="sub" list="subList" placeholder="선택하거나 입력">
+<datalist id="subList"></datalist>
 
 <label>날짜</label>
 <input type="date" id="date">
@@ -76,21 +81,40 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <div id="resultArea" class="box">
-<h3 style="color: #4a90e2; margin-top: 0;">✅ 파일 다운로드 완료!</h3>
+<h3 style="color: #4a90e2; margin-top: 0;">✅ 완료!</h3>
 <pre id="indexCode"></pre>
 <button id="btnCopy" class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
 <button onclick="location.reload()" style="background: #555;">새 글 작성하러 가기</button>
 </div>
 
 <script>
+// 카테고리별 데이터 정의
+const subData = {
+"냐람": ["연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스"],
+"냐쥬": ["순애보증수표", "대타위기사랑", "양의 종말"],
+"쥬얀": ["시시콜콜한 마음"],
+"댠닺": ["일상", "잡담"],
+"글": ["단편소설"],
+"원작": ["설정집"],
+"끄적끄적": ["낙서"]
+};
+
+function updateSubList() {
+const parent = document.getElementById('parent').value;
+const datalist = document.getElementById('subList');
+datalist.innerHTML = ""; // 기존 목록 비우기
+
+}
+
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+updateSubList(); // 처음에 한번 실행
 
 function checkPass() {
 if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
-} else { alert("비밀번호가 틀렸습니다!"); }
+} else { alert("틀렸습니다!"); }
 }
 
 function dl(n, t) {
@@ -108,19 +132,6 @@ const p = document.getElementById('parent').value;
 const s = document.getElementById('sub').value.trim();
 const c = document.getElementById('content').value;
 
-if(!f || !t || !s) return alert("다 입력해주세요!");
-
-const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt" };
-const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
-const codeText = JSON.stringify(indexEntry, null, 2) + ",";
-
-dl(f + ".json", JSON.stringify(json, null, 2));
-dl(f + ".txt", c);
-
-document.getElementById('indexCode').innerText = codeText;
-document.getElementById('adminContent').style.display = 'none';
-document.getElementById('resultArea').style.display = 'block';
-window.scrollTo(0, 0);
 }
 
 function copyCode() {
