@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 절대 고장 없는 버전</title>
+<title>관리자 페이지 - 힌트 동기화 수정</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -16,7 +16,8 @@ button:hover { background: #357abd; }
 label { font-size: 0.85em; color: #aaa; margin-top: 10px; display: block; font-weight: bold; }
 pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow-x: auto; font-size: 13px; border: 1px solid #444; margin-bottom: 10px; }
 .copy-btn { background: #28a745; margin-bottom: 10px; }
-.hint-text { font-size: 0.8em; color: #4a90e2; margin-top: -5px; margin-bottom: 10px; }
+/* 힌트 텍스트 스타일 */
+.hint-text { font-size: 0.8em; color: #4a90e2; margin-top: 2px; margin-bottom: 8px; font-weight: bold; min-height: 1.2em; }
 </style>
 </head>
 <body>
@@ -37,7 +38,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <input type="text" id="title" placeholder="제목" autocomplete="off">
 
 <label>상위 카테고리 (Parent)</label>
-<select id="parent" onchange="showHint()">
+<select id="parent" onchange="updateHint()">
 <option value="냐람">냐람</option>
 <option value="냐쥬">냐쥬</option>
 <option value="쥬얀">쥬얀</option>
@@ -49,7 +50,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>하위 카테고리 (Sub)</label>
 
-<div id="categoryHint" class="hint-text">추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스</div>
+<div id="categoryHint" class="hint-text"></div>
 <input type="text" id="sub" list="subOptions" placeholder="시리즈 이름을 쓰거나 고르세요" autocomplete="off">
 <datalist id="subOptions">
 <option value="연애 포기 각서">
@@ -71,7 +72,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>본문 내용</label>
 
-<textarea id="content"></textarea>
+<textarea id="content" placeholder="내용을 입력하세요"></textarea>
 
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 
@@ -85,6 +86,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <script>
+// 카테고리별 힌트 데이터
 const hints = {
 "냐람": "추천: 연애 포기 각서, 홈 스윗 홈, 러브 콤플렉스",
 "냐쥬": "추천: 순애보증수표, 대타위기사랑, 양의 종말",
@@ -95,7 +97,8 @@ const hints = {
 "끄적끄적": "추천: 낙서"
 };
 
-function showHint() {
+// 상위 카테고리 변경 시 실행되는 함수
+function updateHint() {
 const p = document.getElementById('parent').value;
 const hintBox = document.getElementById('categoryHint');
 const subInput = document.getElementById('sub');
@@ -109,7 +112,8 @@ if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
-showHint();
+// 로그인 성공 시 첫 번째(냐람) 힌트를 바로 보여줌
+updateHint();
 } else { alert("비밀번호가 틀렸습니다!"); }
 }
 
