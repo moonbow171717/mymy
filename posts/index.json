@@ -16,6 +16,14 @@
     "file": "aa-02"
   },
 {
+  "title": "너란 이유 1",
+  "date": "2026-02-23",
+  "category": "diary",
+  "parent": "냐람",
+  "sub": "너란 이유",
+  "file": "bb-01"
+},
+{
   "title": "순애보증수표1",
   "date": "2026-02-23",
   "category": "diary",
