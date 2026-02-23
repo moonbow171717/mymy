@@ -41,10 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
       let posts = [...validPosts];
 
       if (category === "diary") {
-        // 이 부분을 나중에 새로운 아카이브 카테고리로 바꾸세요!
+        // --- 여기서부터 사용자님의 실제 메뉴 구조입니다 ---
         const menuStructure = [
-          { name: "시리즈 A", subs: ["aa"] },
-          { name: "시리즈 B", subs: ["bb"] },
+          { name: "냐람", subs: ["연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스", "구원의 구원", "지구 열 바퀴", "NR"] },
+          { name: "냐쥬", subs: ["순애보증수표", "대타위기사랑", "NJ"] },
+          { name: "쥬얀", subs: ["양의 종말", "시시콜콜한 마음", "JA"] },
+          { name: "댠닺", subs: ["Private", "DD"] },
+          { name: "글", subs: ["성간운", "5/10", "일상", "카페"] },
+          { name: "원작", subs: ["Denied Love"] },
           { name: "끄적끄적", subs: ["잡담"] }
         ];
 
@@ -66,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         });
         subMenu.innerHTML = menuHtml;
+        // ----------------------------------------------
       } else {
         subMenu.innerHTML = `<a href="index.html" class="active">최신글 목록</a>`;
       }
@@ -74,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (subParam) posts = posts.filter(p => p.sub === subParam);
       else if (parentParam) posts = posts.filter(p => p.parent === parentParam);
 
-      // 파일명 순으로 정렬
+      // 파일명(file) 순으로 정렬
       posts.sort((a, b) => (a.file < b.file ? -1 : 1));
 
       list.innerHTML = "";
@@ -84,9 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         item.innerHTML = `<h3>${p.title}</h3><span class="date">${p.date}</span><p>${p.excerpt || "내용 보기"}</p>`;
         item.onclick = () => {
           let fromPath = location.search ? `index.html${location.search}` : "index.html";
-          // 파일 이름을 직접 연결
-          let fileName = p.file;
-          location.href = `viewer.html?post=posts/${fileName}.json&from=${encodeURIComponent(fromPath)}`;
+          location.href = `viewer.html?post=posts/${p.file}.json&from=${encodeURIComponent(fromPath)}`;
         };
         list.appendChild(item);
       });
