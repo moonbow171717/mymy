@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // --- 여기서부터 사용자님의 실제 메뉴 구조입니다 ---
         const menuStructure = [
           { name: "소설", subs: ["5/10","성간운"] },
-          { name: "원작", subs: ["Denied Love"] },
+          { name: "원작", subs: ["Denied Love", "Enemies With Benefits"] },
           { name: "끄적끄적", subs: ["잡담"] }
         ];
 
