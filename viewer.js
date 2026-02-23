@@ -69,41 +69,34 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("posts/index.json?v=" + Date.now())
           .then(res => res.json())
           .then(allPosts => {
-            // 주소창에서 sub(소분류) 정보가 있는지 확인
             const hasSub = fromPath.includes("sub=");
-            
-            // 💡 전체 기록(cat=diary)이나 홈(index.html)에서 온 경우엔 로직을 중단(버튼 안 만듦)
             if (!hasSub) return;
 
-            // sub 이름 추출 및 정규화
             const currentSubFromUrl = decodeURIComponent(fromPath.split("sub=")[1].split("&")[0]).replace(/\s/g, "").toLowerCase();
-            const currentSub = (p.sub || "").trim();
 
-            // 같은 sub를 가진 글들만 필터링
+            // 정렬 로직 수정: 날짜 대신 파일 이름(file) 순으로 정렬
             const seriesPosts = allPosts
               .filter(item => {
                 if (!item.sub) return false;
                 const itemSubClean = item.sub.replace(/\s/g, "").toLowerCase();
                 return itemSubClean.includes(currentSubFromUrl) || currentSubFromUrl.includes(itemSubClean);
               })
-              .sort((a, b) => new Date(a.date) - new Date(b.date));
+              .sort((a, b) => {
+                const nameA = (a.file || "").toLowerCase();
+                const nameB = (b.file || "").toLowerCase();
+                return nameA < nameB ? -1 : (nameA > nameB ? 1 : 0);
+              });
 
-            const currentIndex = seriesPosts.findIndex(item => `posts/${item.file || item.date}.json` === postUrl);
+            const currentIndex = seriesPosts.findIndex(item => `posts/${item.file}.json` === postUrl);
 
             const navContainer = document.getElementById("series-nav");
             if (currentIndex !== -1 && seriesPosts.length > 1) {
-              
-              // 💡 '글'로 표시할 단어 리스트
-              const postUnits = ["일상", "카페", "dd", "nr", "nj", "ja", "잡담", "기록"]; 
-              
-              // 현재 주소창 메뉴 이름에 위 단어가 들어있으면 '글', 아니면 '화'
-              const isPostUnit = postUnits.some(u => currentSubFromUrl.includes(u));
-              const unit = isPostUnit ? "글" : "화";
+              const unit = "화"; 
               
               let navHtml = "";
               if (currentIndex > 0) {
                 const prev = seriesPosts[currentIndex - 1];
-                const prevUrl = `viewer.html?post=posts/${prev.file || prev.date}.json&from=${encodeURIComponent(q.get("from") || "index.html")}`;
+                const prevUrl = `viewer.html?post=posts/${prev.file}.json&from=${encodeURIComponent(q.get("from") || "index.html")}`;
                 navHtml += `<a href="${prevUrl}" class="back-btn" style="flex:1; text-align:center;">← 이전 ${unit}</a>`;
               } else {
                 navHtml += `<div style="flex:1;"></div>`;
@@ -111,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               if (currentIndex < seriesPosts.length - 1) {
                 const next = seriesPosts[currentIndex + 1];
-                const nextUrl = `viewer.html?post=posts/${next.file || next.date}.json&from=${encodeURIComponent(q.get("from") || "index.html")}`;
+                const nextUrl = `viewer.html?post=posts/${next.file}.json&from=${encodeURIComponent(q.get("from") || "index.html")}`;
                 navHtml += `<a href="${nextUrl}" class="back-btn" style="flex:1; text-align:center;">다음 ${unit} →</a>`;
               } else {
                 navHtml += `<div style="flex:1;"></div>`;
