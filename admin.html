@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 지능형 목록</title>
+<title>관리자 페이지 - 목록 동기화 완벽 버전</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -31,10 +31,10 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 <h2>✍️ 새 포스트 작성</h2>
 
 <label>파일 이름 (예: aa-03)</label>
-<input type="text" id="fileName">
+<input type="text" id="fileName" autocomplete="off">
 
 <label>글 제목</label>
-<input type="text" id="title">
+<input type="text" id="title" autocomplete="off">
 
 <label>상위 카테고리 (Parent)</label>
 <select id="parent" onchange="updateSubList()">
@@ -49,7 +49,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </select>
 
 <label>하위 카테고리 (Sub)</label>
-<input type="text" id="sub" list="subList" placeholder="선택하거나 입력">
+<input type="text" id="sub" list="subList" placeholder="선택하거나 입력" autocomplete="off">
 <datalist id="subList"></datalist>
 
 <label>날짜</label>
@@ -71,7 +71,7 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 </div>
 
 <script>
-// 카테고리별 데이터 정의
+// 카테고리별 데이터 (여기서 목록을 수정하시면 됩니다)
 const subData = {
 "냐람": ["연애 포기 각서", "홈 스윗 홈", "러브 콤플렉스"],
 "냐쥬": ["순애보증수표", "대타위기사랑", "양의 종말"],
@@ -85,18 +85,18 @@ const subData = {
 function updateSubList() {
 const parent = document.getElementById('parent').value;
 const datalist = document.getElementById('subList');
-datalist.innerHTML = ""; // 기존 목록 비우기
+const subInput = document.getElementById('sub');
 
 }
 
 document.getElementById('date').value = new Date().toISOString().substring(0, 10);
-updateSubList(); // 처음에 한번 실행
 
 function checkPass() {
 if (document.getElementById('passInput').value === "1234") {
 document.getElementById('loginSection').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.body.style.alignItems = 'flex-start';
+updateSubList(); // 로그인 성공 시 목록 초기화
 } else { alert("틀렸습니다!"); }
 }
 
