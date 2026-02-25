@@ -44,7 +44,29 @@ document.addEventListener("DOMContentLoaded", () => {
         // --- 여기서부터 사용자님의 실제 메뉴 구조입니다 ---
         const menuStructure = [
           { name: "소설", subs: ["5/10","성간운"] },
-          { name: "원작", subs: ["Denied Love", "Enemies With Benefits"] },
+          { name: "원작", subs: [
+                  "23.5",
+                  "APPLE",
+                  "Bake Love Feelings",
+                  "Chasing Love",
+                  "CRUSH",
+                  "Dangerous Queen",
+                  "Denied Love",
+                  "Enemies With Benefits",
+                  "MATE",
+                  "Pluto",
+                  "Poisonous Love",
+                  "Queendom",
+                  "Reverse 4 You",
+                  "Reverse with Me",
+                  "The Air",
+                  "The Earth",
+                  "The Fire",
+                  "The Water",
+                  "US",
+                  "Visual",
+                  "Whale Store XOXO"
+            ] },
           { name: "끄적끄적", subs: ["잡담"] }
         ];
 
