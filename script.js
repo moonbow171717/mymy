@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   "Dangerous Queen",
                   "Denied Love",
                   "Ditto",
+                  "Dream",
                   "Enemies With Benefits",
                   "MATE",
                   "Moon Shadow",
