@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 하위 카테고리 가이드</title>
+<title>관리자 페이지 - 이미지 추가 가이드</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
@@ -35,6 +35,9 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>글 제목</label>
 <input type="text" id="title">
+
+<label>이미지 주소 (한 줄에 하나씩 붙여넣으세요)</label>
+<textarea id="imgUrls" style="height: 80px;" placeholder="https://주소1&#10;https://주소2"></textarea>
 
 <label>상위 카테고리 (Parent)</label>
 <select id="parent" onchange="updateHint()">
@@ -95,6 +98,7 @@ document.getElementById('resultArea').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.getElementById('fileName').value = "";
 document.getElementById('title').value = "";
+document.getElementById('imgUrls').value = ""; // 이미지 칸 초기화
 document.getElementById('sub').value = "";
 document.getElementById('content').value = "";
 document.getElementById('isAdult').checked = false;
@@ -124,6 +128,7 @@ a.click();
 function go() {
 const f = document.getElementById('fileName').value.trim();
 let t = document.getElementById('title').value.trim();
+const rawImgUrls = document.getElementById('imgUrls').value.trim(); 
 const d = document.getElementById('date').value;
 const p = document.getElementById('parent').value;
 const s = document.getElementById('sub').value.trim();
@@ -132,14 +137,26 @@ const isAdult = document.getElementById('isAdult').checked;
 
 if(!f || !t || !s) return alert("다 입력해주세요!");
 
-// 성인용 체크 시 제목 앞에 🔞 추가
 if(isAdult && !t.includes("🔞")) {
   t = "🔞 " + t;
 }
 
-const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt" };
+// 💡 이미지 주소들을 배열로 분리
+const imgArray = rawImgUrls ? rawImgUrls.split(/\n|,/).map(url => url.trim()).filter(url => url !== "") : [];
+
+const json = { 
+  "title": t, 
+  "date": d, 
+  "category": "diary", 
+  "parent": p, 
+  "sub": s, 
+  "text": "posts/" + f + ".txt",
+  "images": imgArray 
+};
+
 const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
 const codeText = JSON.stringify(indexEntry, null, 2) + ",";
+
 dl(f + ".json", JSON.stringify(json, null, 2));
 dl(f + ".txt", c);
 document.getElementById('indexCode').innerText = codeText;
