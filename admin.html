@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 이미지 추가 가이드</title>
+<title>관리자 페이지 - 이미지 삽입 가이드</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
 input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; display: block; box-sizing: border-box; border-radius: 6px; border: 1px solid #444; background: #333; color: white; font-size: 16px; }
-textarea { height: 200px; }
+textarea { height: 250px; }
 button { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 6px; font-size: 16px; margin-top: 10px; }
 button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
@@ -18,6 +18,11 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 .copy-btn:hover { background: #218838; }
 .hint { font-size: 0.8em; color: #4a90e2; margin-top: 2px; margin-bottom: 10px; font-weight: bold; line-height: 1.4; }
 .adult-check { display: flex; align-items: center; gap: 10px; cursor: pointer; background: #331a1a; padding: 12px; border-radius: 6px; border: 1px solid #552222; margin: 10px 0; }
+
+/* 이미지 삽입 도구 스타일 */
+.img-tool { background: #333; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-top: 10px; }
+.img-tool input { margin-bottom: 5px; font-size: 14px; }
+.img-tool button { padding: 8px; background: #666; font-size: 14px; margin-top: 0; }
 </style>
 </head>
 <body>
@@ -35,9 +40,6 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <label>글 제목</label>
 <input type="text" id="title">
-
-<label>이미지 주소 (한 줄에 하나씩 붙여넣으세요)</label>
-<textarea id="imgUrls" style="height: 80px;" placeholder="https://주소1&#10;https://주소2"></textarea>
 
 <label>상위 카테고리 (Parent)</label>
 <select id="parent" onchange="updateHint()">
@@ -59,8 +61,14 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
   <span style="color: #ff6666; font-weight: bold;">🔞 성인용 콘텐츠 (체크 시 제목에 자동 추가)</span>
 </label>
 
+<div class="img-tool">
+  <label style="margin-top:0; color:#4a90e2;">🖼️ 본문 중간 사진 넣기</label>
+  <input type="text" id="midImgUrl" placeholder="이미지 주소를 여기에 붙여넣으세요">
+  <button type="button" onclick="insertImage()">본문에 사진 코드 삽입</button>
+</div>
+
 <label>본문 내용</label>
-<textarea id="content"></textarea>
+<textarea id="content" placeholder="글 내용을 작성하세요. 사진 코드는 원하는 위치에 삽입됩니다."></textarea>
 
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 </div>
@@ -78,6 +86,24 @@ const menuData = {
 "원작": ["23.5", "APPLE", "Bake Love Feelings", "Chasing Love", "CRUSH", "Dangerous Queen", "Denied Love", "Ditto", "Dream", "Enemies With Benefits", "Harmony Secret", "MATE", "Moon Shadow", "Pluto", "Poisonous Love", "Queendom", "Reverse 4 You", "Reverse with Me", "Roller coaster", "The Air", "The Earth", "The Fire", "The Water", "US", "Visual", "Whale Store XOXO"],
 "끄적끄적": ["잡담"]
 };
+
+// 💡 이미지 태그 본문에 삽입하는 함수
+function insertImage() {
+  const url = document.getElementById('midImgUrl').value.trim();
+  const textarea = document.getElementById('content');
+  if(!url) return alert("이미지 주소를 입력해주세요!");
+  
+  const imgTag = `\n<img src="${url}" style="width:100%; border-radius:8px; margin:20px 0;">\n`;
+  
+  // 커서 위치에 삽입
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const text = textarea.value;
+  textarea.value = text.substring(0, start) + imgTag + text.substring(end);
+  
+  document.getElementById('midImgUrl').value = ""; // 입력창 비우기
+  textarea.focus();
+}
 
 function updateHint() {
 const p = document.getElementById('parent').value;
@@ -98,9 +124,9 @@ document.getElementById('resultArea').style.display = 'none';
 document.getElementById('adminContent').style.display = 'block';
 document.getElementById('fileName').value = "";
 document.getElementById('title').value = "";
-document.getElementById('imgUrls').value = ""; // 이미지 칸 초기화
 document.getElementById('sub').value = "";
 document.getElementById('content').value = "";
+document.getElementById('midImgUrl').value = "";
 document.getElementById('isAdult').checked = false;
 window.scrollTo(0, 0);
 }
@@ -128,7 +154,6 @@ a.click();
 function go() {
 const f = document.getElementById('fileName').value.trim();
 let t = document.getElementById('title').value.trim();
-const rawImgUrls = document.getElementById('imgUrls').value.trim(); 
 const d = document.getElementById('date').value;
 const p = document.getElementById('parent').value;
 const s = document.getElementById('sub').value.trim();
@@ -141,22 +166,10 @@ if(isAdult && !t.includes("🔞")) {
   t = "🔞 " + t;
 }
 
-// 💡 이미지 주소들을 배열로 분리
-const imgArray = rawImgUrls ? rawImgUrls.split(/\n|,/).map(url => url.trim()).filter(url => url !== "") : [];
-
-const json = { 
-  "title": t, 
-  "date": d, 
-  "category": "diary", 
-  "parent": p, 
-  "sub": s, 
-  "text": "posts/" + f + ".txt",
-  "images": imgArray 
-};
-
+// 본문 중간에 이미지를 넣는 방식이므로 .json의 images 배열은 비워둡니다.
+const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt", "images": [] };
 const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
 const codeText = JSON.stringify(indexEntry, null, 2) + ",";
-
 dl(f + ".json", JSON.stringify(json, null, 2));
 dl(f + ".txt", c);
 document.getElementById('indexCode').innerText = codeText;
