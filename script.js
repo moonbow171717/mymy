@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   "Ditto",
                   "Dream",
                   "Enemies With Benefits",
+                  "Harmony Secret",
                   "MATE",
                   "Moon Shadow",
                   "Pluto",
