@@ -55,10 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const content = txt.replace(/\n/g, "<br>");
         sidebar.innerHTML = `<a href="${fromPath}" class="active">${backText}</a>`;
         
+        // 🔞 성인용 체크 및 스타일 설정
+        const isAdult = p.title.includes("🔞");
+        const titleStyle = isAdult ? "color: #ff4d4d; font-weight: bold;" : "";
+        const adultWarning = isAdult ? `<div style="background: #331111; color: #ff9999; padding: 15px; border-radius: 8px; border: 1px solid #662222; margin-bottom: 20px; font-size: 0.9em; text-align: center;">⚠️ 본 글은 성인 전용 콘텐츠를 포함하고 있습니다.</div>` : "";
+
         container.innerHTML = `
           <article class="post-view">
-            <h1 class="post-title">${p.title}</h1>
+            <h1 class="post-title" style="${titleStyle}">${p.title}</h1>
             <div class="meta">${p.date}</div>
+            ${adultWarning}
             ${images}
             <div class="post-content">${content}</div>
             <div id="series-nav" style="margin-top:40px; display:flex; justify-content:space-between; gap:10px;"></div>
@@ -74,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const currentSubFromUrl = decodeURIComponent(fromPath.split("sub=")[1].split("&")[0]).replace(/\s/g, "").toLowerCase();
 
-            // 정렬 로직 수정: 날짜 대신 파일 이름(file) 순으로 정렬
             const seriesPosts = allPosts
               .filter(item => {
                 if (!item.sub) return false;
@@ -91,7 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const navContainer = document.getElementById("series-nav");
             if (currentIndex !== -1 && seriesPosts.length > 1) {
-              const unit = "화"; 
+              
+              // 💡 '글'로 표시할 단어 리스트
+              const postUnits = ["일상", "카페", "nr", "nj", "잡담", "기록"]; 
+              const isPostUnit = postUnits.some(u => currentSubFromUrl.includes(u));
+              const unit = isPostUnit ? "글" : "화";
               
               let navHtml = "";
               if (currentIndex > 0) {
