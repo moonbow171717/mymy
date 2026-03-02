@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 이미지 및 정렬 도구 통합</title>
+<title>관리자 페이지 - 편집 도구 개선</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
 input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; display: block; box-sizing: border-box; border-radius: 6px; border: 1px solid #444; background: #333; color: white; font-size: 16px; }
-textarea { height: 350px; font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; }
+textarea { height: 380px; font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; }
 button { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 6px; font-size: 16px; margin-top: 10px; }
 button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
@@ -19,7 +19,6 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 .hint { font-size: 0.8em; color: #4a90e2; margin-top: 2px; margin-bottom: 10px; font-weight: bold; line-height: 1.4; }
 .adult-check { display: flex; align-items: center; gap: 10px; cursor: pointer; background: #331a1a; padding: 12px; border-radius: 6px; border: 1px solid #552222; margin: 10px 0; }
 
-/* 통합 편집 도구 스타일 */
 .edit-tools { background: #333; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
 .tool-row { display: flex; gap: 8px; }
 .img-input-group { flex: 1; }
@@ -67,15 +66,13 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 
 <div class="edit-tools">
   <label style="margin-top:0; color:#4a90e2;">🛠️ 편집 도구</label>
-  
   <div class="tool-row">
     <div class="img-input-group">
       <input type="text" id="midImgUrl" placeholder="이미지 주소(디스코드 등) 붙여넣기">
     </div>
     <button type="button" class="btn-img" onclick="insertImage()">🖼️ 사진 삽입</button>
   </div>
-  
-  <button type="button" class="btn-center" onclick="insertCenter()">↔️ 선택한 글/사진 가운데 정렬</button>
+  <button type="button" class="btn-center" onclick="insertCenter()">↔️ 선택 영역 가운데 정렬</button>
 </div>
 
 <label>본문 내용</label>
@@ -98,18 +95,17 @@ const menuData = {
 "끄적끄적": ["잡담"]
 };
 
-// 💡 이미지 삽입 함수 (디스코드 주소 자동 최적화 포함)
 function insertImage() {
   let url = document.getElementById('midImgUrl').value.trim();
   const textarea = document.getElementById('content');
   if(!url) return alert("이미지 주소를 입력해주세요!");
 
-  // GitHub 주소일 경우 자동으로 Raw 주소로 변환 시도
   if(url.includes("github.com") && url.includes("/blob/")) {
     url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
   }
   
-  const imgTag = `\n<img src="${url}" style="width:100%; border-radius:8px; margin:20px 0;">\n`;
+  // 앞뒤 \n 제거 버전
+  const imgTag = `<img src="${url}" style="width:100%; border-radius:8px; margin:20px 0;">`;
   
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
@@ -120,7 +116,6 @@ function insertImage() {
   textarea.focus();
 }
 
-// 💡 가운데 정렬 함수 (선택 영역 감싸기)
 function insertCenter() {
   const textarea = document.getElementById('content');
   const start = textarea.selectionStart;
@@ -128,11 +123,12 @@ function insertCenter() {
   const selectedText = textarea.value.substring(start, end);
   
   if (start === end) {
-    alert("가운데 정렬할 글자나 이미지를 마우스로 드래그(선택)한 뒤 버튼을 눌러주세요!");
+    alert("가운데 정렬할 내용을 드래그한 뒤 눌러주세요!");
     return;
   }
   
-  const centerTag = `\n<div style="text-align: center;">\n${selectedText}\n</div>\n`;
+  // 태그 내부 \n 제거 버전
+  const centerTag = `<div style="text-align: center;">${selectedText}</div>`;
   
   textarea.value = textarea.value.substring(0, start) + centerTag + textarea.value.substring(end);
   textarea.focus();
