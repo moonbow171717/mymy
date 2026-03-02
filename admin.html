@@ -7,7 +7,7 @@
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
 input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; display: block; box-sizing: border-box; border-radius: 6px; border: 1px solid #444; background: #333; color: white; font-size: 16px; }
-textarea { height: 380px; font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; }
+textarea { height: 400px; font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; }
 button { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 6px; font-size: 16px; margin-top: 10px; }
 button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
@@ -26,6 +26,10 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 .btn-img { background: #666; font-size: 14px; padding: 10px; width: 130px; margin: 0; }
 .btn-center { background: #9b59b6; font-size: 14px; padding: 10px; width: 100%; margin: 0; }
 .btn-center:hover { background: #8e44ad; }
+
+/* 말풍선 버튼 스타일 (간격 여유 버전) */
+.btn-talk-left { background: #555; font-size: 13px; padding: 10px; flex: 1; margin: 0; }
+.btn-talk-right { background: #2c3e50; font-size: 13px; padding: 10px; flex: 1; margin: 0; border: 1px solid #4a90e2; }
 </style>
 </head>
 <body>
@@ -68,15 +72,20 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
   <label style="margin-top:0; color:#4a90e2;">🛠️ 편집 도구</label>
   <div class="tool-row">
     <div class="img-input-group">
-      <input type="text" id="midImgUrl" placeholder="이미지 주소(디스코드 등) 붙여넣기">
+      <input type="text" id="midImgUrl" placeholder="이미지 주소 붙여넣기">
     </div>
     <button type="button" class="btn-img" onclick="insertImage()">🖼️ 사진 삽입</button>
   </div>
   <button type="button" class="btn-center" onclick="insertCenter()">↔️ 선택 영역 가운데 정렬</button>
+  
+  <div class="tool-row">
+    <button type="button" class="btn-talk-left" onclick="insertTalk('left')">🗨️ 상대방 (왼쪽)</button>
+    <button type="button" class="btn-talk-right" onclick="insertTalk('right')">🗨️ 나 (오른쪽)</button>
+  </div>
 </div>
 
 <label>본문 내용</label>
-<textarea id="content" placeholder="글 내용을 작성하세요. 이미지나 가운데 정렬은 위 버튼을 이용하세요."></textarea>
+<textarea id="content" placeholder="글 내용을 작성하세요."></textarea>
 
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 </div>
@@ -99,19 +108,13 @@ function insertImage() {
   let url = document.getElementById('midImgUrl').value.trim();
   const textarea = document.getElementById('content');
   if(!url) return alert("이미지 주소를 입력해주세요!");
-
   if(url.includes("github.com") && url.includes("/blob/")) {
     url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
   }
-  
-  // 앞뒤 \n 제거 버전
   const imgTag = `<img src="${url}" style="width:100%; border-radius:8px; margin:20px 0;">`;
-  
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
-  const text = textarea.value;
-  textarea.value = text.substring(0, start) + imgTag + text.substring(end);
-  
+  textarea.value = textarea.value.substring(0, start) + imgTag + textarea.value.substring(end);
   document.getElementById('midImgUrl').value = ""; 
   textarea.focus();
 }
@@ -121,98 +124,104 @@ function insertCenter() {
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
   const selectedText = textarea.value.substring(start, end);
-  
-  if (start === end) {
-    alert("가운데 정렬할 내용을 드래그한 뒤 눌러주세요!");
-    return;
-  }
-  
-  // 태그 내부 \n 제거 버전
+  if (start === end) return alert("정렬할 내용을 드래그해주세요!");
   const centerTag = `<div style="text-align: center;">${selectedText}</div>`;
-  
   textarea.value = textarea.value.substring(0, start) + centerTag + textarea.value.substring(end);
   textarea.focus();
 }
 
+function insertTalk(type) {
+  const textarea = document.getElementById('content');
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const selectedText = textarea.value.substring(start, end) || "내용 입력";
+  
+  let talkTag = "";
+  if(type === 'left') {
+    // 여유로운 간격을 위해 margin 5px로 설정
+    talkTag = `<div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">${selectedText}</div></div>`;
+  } else {
+    talkTag = `<div style="display: flex; justify-content: flex-end; margin: 5px 0;"><div style="background: #4a90e2; color: white; padding: 8px 12px; border-radius: 15px; border-top-right-radius: 2px; max-width: 70%;">${selectedText}</div></div>`;
+  }
+  
+  textarea.value = textarea.value.substring(0, start) + talkTag + textarea.value.substring(end);
+  textarea.focus();
+}
+
 function updateHint() {
-const p = document.getElementById('parent').value;
-const hintBox = document.getElementById('subHint');
-const dataList = document.getElementById('subList');
-const subs = menuData[p] || [];
-hintBox.innerText = "추천: " + subs.join(", ");
-dataList.innerHTML = "";
-subs.forEach(s => {
-const opt = document.createElement('option');
-opt.value = s;
-dataList.appendChild(opt);
-});
+  const p = document.getElementById('parent').value;
+  const hintBox = document.getElementById('subHint');
+  const dataList = document.getElementById('subList');
+  const subs = menuData[p] || [];
+  hintBox.innerText = "추천: " + subs.join(", ");
+  dataList.innerHTML = "";
+  subs.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    dataList.appendChild(opt);
+  });
 }
 
 function resetForm() {
-document.getElementById('resultArea').style.display = 'none';
-document.getElementById('adminContent').style.display = 'block';
-document.getElementById('fileName').value = "";
-document.getElementById('title').value = "";
-document.getElementById('sub').value = "";
-document.getElementById('content').value = "";
-document.getElementById('midImgUrl').value = "";
-document.getElementById('isAdult').checked = false;
-window.scrollTo(0, 0);
+  document.getElementById('resultArea').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+  document.getElementById('fileName').value = "";
+  document.getElementById('title').value = "";
+  document.getElementById('sub').value = "";
+  document.getElementById('content').value = "";
+  document.getElementById('midImgUrl').value = "";
+  document.getElementById('isAdult').checked = false;
+  window.scrollTo(0, 0);
 }
 
 window.onload = () => {
-document.getElementById('date').value = new Date().toISOString().substring(0, 10);
-updateHint();
+  document.getElementById('date').value = new Date().toISOString().substring(0, 10);
+  updateHint();
 };
 
 function checkPass() {
-if (document.getElementById('passInput').value === "1234") {
-document.getElementById('loginSection').style.display = 'none';
-document.getElementById('adminContent').style.display = 'block';
-document.body.style.alignItems = 'flex-start';
-} else { alert("비밀번호가 틀렸습니다!"); }
+  if (document.getElementById('passInput').value === "1234") {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    document.body.style.alignItems = 'flex-start';
+  } else { alert("비밀번호가 틀렸습니다!"); }
 }
 
 function dl(n, t) {
-const a = document.createElement('a');
-a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(t);
-a.download = n;
-a.click();
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(t);
+  a.download = n;
+  a.click();
 }
 
 function go() {
-const f = document.getElementById('fileName').value.trim();
-let t = document.getElementById('title').value.trim();
-const d = document.getElementById('date').value;
-const p = document.getElementById('parent').value;
-const s = document.getElementById('sub').value.trim();
-const c = document.getElementById('content').value;
-const isAdult = document.getElementById('isAdult').checked;
-
-if(!f || !t || !s) return alert("다 입력해주세요!");
-
-if(isAdult && !t.includes("🔞")) {
-  t = "🔞 " + t;
-}
-
-const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt", "images": [] };
-const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
-const codeText = JSON.stringify(indexEntry, null, 2) + ",";
-dl(f + ".json", JSON.stringify(json, null, 2));
-dl(f + ".txt", c);
-document.getElementById('indexCode').innerText = codeText;
-document.getElementById('adminContent').style.display = 'none';
-document.getElementById('resultArea').style.display = 'block';
-window.scrollTo(0, 0);
+  const f = document.getElementById('fileName').value.trim();
+  let t = document.getElementById('title').value.trim();
+  const d = document.getElementById('date').value;
+  const p = document.getElementById('parent').value;
+  const s = document.getElementById('sub').value.trim();
+  const c = document.getElementById('content').value;
+  const isAdult = document.getElementById('isAdult').checked;
+  if(!f || !t || !s) return alert("다 입력해주세요!");
+  if(isAdult && !t.includes("🔞")) t = "🔞 " + t;
+  const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt", "images": [] };
+  const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
+  const codeText = JSON.stringify(indexEntry, null, 2) + ",";
+  dl(f + ".json", JSON.stringify(json, null, 2));
+  dl(f + ".txt", c);
+  document.getElementById('indexCode').innerText = codeText;
+  document.getElementById('adminContent').style.display = 'none';
+  document.getElementById('resultArea').style.display = 'block';
+  window.scrollTo(0, 0);
 }
 
 function copyCode() {
-const code = document.getElementById('indexCode').innerText;
-navigator.clipboard.writeText(code).then(() => {
-const btn = document.getElementById('btnCopy');
-btn.innerText = "✅ 복사되었습니다!";
-setTimeout(() => { btn.innerText = "📋 코드 복사하기"; }, 2000);
-});
+  const code = document.getElementById('indexCode').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('btnCopy');
+    btn.innerText = "✅ 복사되었습니다!";
+    setTimeout(() => { btn.innerText = "📋 코드 복사하기"; }, 2000);
+  });
 }
 </script>
 </body>
