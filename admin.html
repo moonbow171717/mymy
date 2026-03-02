@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지 - 이미지 삽입 가이드</title>
+<title>관리자 페이지 - 이미지 및 정렬 도구 통합</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
 .box { max-width: 600px; width: 100%; background: #2a2a2a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); box-sizing: border-box; margin-bottom: 20px; }
 input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; display: block; box-sizing: border-box; border-radius: 6px; border: 1px solid #444; background: #333; color: white; font-size: 16px; }
-textarea { height: 250px; }
+textarea { height: 350px; font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; }
 button { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 6px; font-size: 16px; margin-top: 10px; }
 button:hover { background: #357abd; }
 #adminContent, #resultArea { display: none; }
@@ -19,10 +19,14 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
 .hint { font-size: 0.8em; color: #4a90e2; margin-top: 2px; margin-bottom: 10px; font-weight: bold; line-height: 1.4; }
 .adult-check { display: flex; align-items: center; gap: 10px; cursor: pointer; background: #331a1a; padding: 12px; border-radius: 6px; border: 1px solid #552222; margin: 10px 0; }
 
-/* 이미지 삽입 도구 스타일 */
-.img-tool { background: #333; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-top: 10px; }
-.img-tool input { margin-bottom: 5px; font-size: 14px; }
-.img-tool button { padding: 8px; background: #666; font-size: 14px; margin-top: 0; }
+/* 통합 편집 도구 스타일 */
+.edit-tools { background: #333; padding: 15px; border-radius: 8px; border: 1px solid #444; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.tool-row { display: flex; gap: 8px; }
+.img-input-group { flex: 1; }
+.edit-tools input { margin: 0; font-size: 14px; }
+.btn-img { background: #666; font-size: 14px; padding: 10px; width: 130px; margin: 0; }
+.btn-center { background: #9b59b6; font-size: 14px; padding: 10px; width: 100%; margin: 0; }
+.btn-center:hover { background: #8e44ad; }
 </style>
 </head>
 <body>
@@ -61,14 +65,21 @@ pre { background: #000; padding: 15px; border-radius: 6px; color: #0f0; overflow
   <span style="color: #ff6666; font-weight: bold;">🔞 성인용 콘텐츠 (체크 시 제목에 자동 추가)</span>
 </label>
 
-<div class="img-tool">
-  <label style="margin-top:0; color:#4a90e2;">🖼️ 본문 중간 사진 넣기</label>
-  <input type="text" id="midImgUrl" placeholder="이미지 주소를 여기에 붙여넣으세요">
-  <button type="button" onclick="insertImage()">본문에 사진 코드 삽입</button>
+<div class="edit-tools">
+  <label style="margin-top:0; color:#4a90e2;">🛠️ 편집 도구</label>
+  
+  <div class="tool-row">
+    <div class="img-input-group">
+      <input type="text" id="midImgUrl" placeholder="이미지 주소(디스코드 등) 붙여넣기">
+    </div>
+    <button type="button" class="btn-img" onclick="insertImage()">🖼️ 사진 삽입</button>
+  </div>
+  
+  <button type="button" class="btn-center" onclick="insertCenter()">↔️ 선택한 글/사진 가운데 정렬</button>
 </div>
 
 <label>본문 내용</label>
-<textarea id="content" placeholder="글 내용을 작성하세요. 사진 코드는 원하는 위치에 삽입됩니다."></textarea>
+<textarea id="content" placeholder="글 내용을 작성하세요. 이미지나 가운데 정렬은 위 버튼을 이용하세요."></textarea>
 
 <button onclick="go()">🚀 파일 생성 및 코드 추출</button>
 </div>
@@ -87,21 +98,43 @@ const menuData = {
 "끄적끄적": ["잡담"]
 };
 
-// 💡 이미지 태그 본문에 삽입하는 함수
+// 💡 이미지 삽입 함수 (디스코드 주소 자동 최적화 포함)
 function insertImage() {
-  const url = document.getElementById('midImgUrl').value.trim();
+  let url = document.getElementById('midImgUrl').value.trim();
   const textarea = document.getElementById('content');
   if(!url) return alert("이미지 주소를 입력해주세요!");
+
+  // GitHub 주소일 경우 자동으로 Raw 주소로 변환 시도
+  if(url.includes("github.com") && url.includes("/blob/")) {
+    url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
+  }
   
   const imgTag = `\n<img src="${url}" style="width:100%; border-radius:8px; margin:20px 0;">\n`;
   
-  // 커서 위치에 삽입
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
   const text = textarea.value;
   textarea.value = text.substring(0, start) + imgTag + text.substring(end);
   
-  document.getElementById('midImgUrl').value = ""; // 입력창 비우기
+  document.getElementById('midImgUrl').value = ""; 
+  textarea.focus();
+}
+
+// 💡 가운데 정렬 함수 (선택 영역 감싸기)
+function insertCenter() {
+  const textarea = document.getElementById('content');
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const selectedText = textarea.value.substring(start, end);
+  
+  if (start === end) {
+    alert("가운데 정렬할 글자나 이미지를 마우스로 드래그(선택)한 뒤 버튼을 눌러주세요!");
+    return;
+  }
+  
+  const centerTag = `\n<div style="text-align: center;">\n${selectedText}\n</div>\n`;
+  
+  textarea.value = textarea.value.substring(0, start) + centerTag + textarea.value.substring(end);
   textarea.focus();
 }
 
@@ -166,7 +199,6 @@ if(isAdult && !t.includes("🔞")) {
   t = "🔞 " + t;
 }
 
-// 본문 중간에 이미지를 넣는 방식이므로 .json의 images 배열은 비워둡니다.
 const json = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "text": "posts/" + f + ".txt", "images": [] };
 const indexEntry = { "title": t, "date": d, "category": "diary", "parent": p, "sub": s, "file": f };
 const codeText = JSON.stringify(indexEntry, null, 2) + ",";
