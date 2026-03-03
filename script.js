@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (category === "diary") {
         // --- 여기서부터 사용자님의 실제 메뉴 구조입니다 ---
         const menuStructure = [
-          { name: "소설", subs: ["5/10","성간운"] },
+          { name: "소설", subs: ["5/10", "길잡이", "성간운"] },
           { name: "원작", subs: [
                   "23.5",
                   "APPLE",
