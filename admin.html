@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
 <title>관리자 페이지 - 편집 도구 개선</title>
 <style>
 body { background: #1a1a1a; color: white; padding: 20px; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
@@ -138,7 +139,6 @@ function insertTalk(type) {
   
   let talkTag = "";
   if(type === 'left') {
-    // 여유로운 간격을 위해 margin 5px로 설정
     talkTag = `<div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">${selectedText}</div></div>`;
   } else {
     talkTag = `<div style="display: flex; justify-content: flex-end; margin: 5px 0;"><div style="background: #4a90e2; color: white; padding: 8px 12px; border-radius: 15px; border-top-right-radius: 2px; max-width: 70%;">${selectedText}</div></div>`;
