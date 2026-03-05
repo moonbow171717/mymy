@@ -46,7 +46,7 @@
 
 일분일초가 아까운데 강은재는 코빼기도 보이지 않았다. 마침 핸드폰을 꺼내 들었을 때 강은재에게 연락이 왔다.
 
-<div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: 시안아 나 좀 늦을 거 가태..</div></div><div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: (눈물을 글썽이면서 불쌍하게 쳐다보는 이모티콘)</div></div><div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: (바들바들 떨면서 서럽게 눈물을 흘리는 이모티콘)]/div></div>
+<div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: 시안아 나 좀 늦을 거 가태..</div></div><div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: (눈물을 글썽이면서 불쌍하게 쳐다보는 이모티콘)</div></div><div style="display: flex; justify-content: flex-start; margin: 5px 0;"><div style="background: #333; color: white; padding: 8px 12px; border-radius: 15px; border-top-left-radius: 2px; max-width: 70%;">은재: (바들바들 떨면서 서럽게 눈물을 흘리는 이모티콘)</div></div>
 
 늦으면 늦는 거지, 왜 우냐?
 
@@ -442,4 +442,3 @@
  
 
 그리고 마침내, 청빛제 공연 시간이 찾아왔다.
-
