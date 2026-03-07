@@ -102,8 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (subParam) posts = posts.filter(p => p.sub === subParam);
       else if (parentParam) posts = posts.filter(p => p.parent === parentParam);
 
-      // 파일명(file) 순으로 정렬
-      posts.sort((a, b) => (a.file < b.file ? -1 : 1));
+      // --- 수정된 부분: 파일명의 숫자를 인식하여 99회 다음 100회가 오도록 정렬 ---
+      posts.sort((a, b) => a.file.localeCompare(b.file, undefined, { numeric: true, sensitivity: 'base' }));
 
       list.innerHTML = "";
       posts.forEach(p => {
